@@ -1145,27 +1145,6 @@ const FALLBACK = {
   default: q=>({thinking:`分解问题「${q.slice(0,12)}」的核心语义，规划最优回答结构...`,content:`关于「**${q.slice(0,22)}${q.length>22?'...':''}**」的深度解析：\n\n---\n\n**核心分析**\n\nNova AI 从多个维度对此问题进行了系统性分析：\n\n- **认知层**：理解问题的表层含义与深层意图\n- **逻辑层**：挖掘内在的因果关系与逻辑链条\n- **实践层**：提供具体可执行的建议与路径\n\n---\n\n**深度洞察**\n\n从第一性原理出发，这个问题的本质在于：*如何在信息噪音中找到真正有价值的信号*。\n\n> 最优解往往不在于增加更多选项，而在于**消除不必要的约束条件**。\n\n**行动建议**\n- 明确你的核心目标（What）\n- 了解关键约束（Why not）\n- 设计最小可行路径（How）\n- 快速迭代验证（When)\n\n---\n\n需要我**针对某个具体方向深入展开**吗？ 🚀`})
 };
 
-// Override callClaude with fallback if needed
-const origCallClaude = callClaude;
-async function callClaude(text) {
-  try {
-    return await origCallClaude(text);
-  } catch(e) {
-    // Use smart fallback
-    await sleep(600 + Math.random() * 800);
-    const lq = text.toLowerCase();
-    if (lq.includes('诗') || (lq.includes('写') && !lq.includes('代码') && !lq.includes('python'))) return FALLBACK['诗'](text);
-    if (lq.includes('python') || lq.includes('算法') || lq.includes('二叉') || lq.includes('排序')) return FALLBACK['python'](text);
-    if (lq.includes('翻译') || lq.includes('英文') || lq.includes('translate')) return FALLBACK['翻译'](text);
-    if (lq.includes('分析') || lq.includes('研究') || lq.includes('突破') || lq.includes('趋势')) return FALLBACK['分析'](text);
-    if (mode==='代码') return FALLBACK['python'](text);
-    if (mode==='翻译') return FALLBACK['翻译'](text);
-    if (mode==='创作') return FALLBACK['诗'](text);
-    if (mode==='深度研究') return FALLBACK['分析'](text);
-    return FALLBACK['default'](text);
-  }
-}
-
 function sendQ(text) {
   $('msg-inp').value = text;
   autoR($('msg-inp'));
