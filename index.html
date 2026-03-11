@@ -1147,7 +1147,7 @@ const FALLBACK = {
 
 // Override callClaude with fallback if needed
 const origCallClaude = callClaude;
-window.callClaude = async function(text) {
+async function callClaude(text) {
   try {
     return await origCallClaude(text);
   } catch(e) {
@@ -1164,7 +1164,7 @@ window.callClaude = async function(text) {
     if (mode==='深度研究') return FALLBACK['分析'](text);
     return FALLBACK['default'](text);
   }
-};
+}
 
 function sendQ(text) {
   $('msg-inp').value = text;
