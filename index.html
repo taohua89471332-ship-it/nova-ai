@@ -443,10 +443,10 @@ select{background:var(--s3);color:var(--t1);border:1px solid var(--b2);border-ra
     <div class="sp-stitle">AI 模型</div>
     <div class="sp-card">
       <div class="mch" id="model-chips">
-        <div class="mc sel" onclick="pickModel(this,'anthropic/claude-3-haiku:free','Nova-Pro')">Nova-Pro</div>
-        <div class="mc" onclick="pickModel(this,'anthropic/claude-3.5-sonnet:free','Nova-Sonnet')">Nova-Sonnet</div>
-        <div class="mc" onclick="pickModel(this,'deepseek/deepseek-chat:free','Nova-Deep')">Nova-Deep</div>
-        <div class="mc" onclick="pickModel(this,'meta-llama/llama-3.1-8b-instruct:free','Nova-Fast')">Nova-Fast</div>
+        <div class="mc sel" onclick="pickModel(this,'deepseek-chat','Nova-Pro')">Nova-Pro</div>
+        <div class="mc" onclick="pickModel(this,'deepseek-reasoner','Nova-R1')">Nova-R1</div>
+        <div class="mc" onclick="pickModel(this,'deepseek-chat','Nova-Code')">Nova-Code</div>
+        <div class="mc" onclick="pickModel(this,'deepseek-chat','Nova-Fast')">Nova-Fast</div>
       </div>
     </div>
 
@@ -763,7 +763,7 @@ select{background:var(--s3);color:var(--t1);border:1px solid var(--b2);border-ra
 // ============================================
 const $ = id => document.getElementById(id);
 let msgs = [], favs = [], gen = false, stopF = false;
-let mode = '聊天', selectedModel = 'deepseek/deepseek-chat:free', modelName = 'Nova-Pro';
+let mode = '聊天', selectedModel = 'deepseek-chat', modelName = 'Nova-Pro';
 let tc = {web:false,think:true,code:false,img:false};
 let prefs = {lang:'中文',style:'专业严谨',maxTok:4096,stream:true,mem:true,showThink:false};
 let totalMsgCount = 0;
@@ -1106,13 +1106,11 @@ async function callClaude(userText) {
     messages: [{role:'system',content:sysPrompt}, ...history]
   };
 
-  const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  const resp = await fetch('https://api.deepseek.com/chat/completions', {
     method:'POST',
     headers:{
       'Content-Type':'application/json',
-      'Authorization':'Bearer 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',
-      'HTTP-Referer':'https://taohua89471332-ship-it.github.io/nova-ai/',
-      'X-Title':'Nova AI'
+      'Authorization':'Bearer sk-6ea40422dabb4610a72796bd15480812',
     },
     body: JSON.stringify(body)
   });
