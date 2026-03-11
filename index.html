@@ -1086,7 +1086,7 @@ async function doSend() {
       const resp = await callClaude(text);
       await addAIMsg(resp.content, text, resp.thinking);
     } catch(e) {
-      await addAIMsg(`**连接说明**\n\n这是 Nova AI 演示版本。要启用真实 Claude AI 对话，需要在代码中配置 Anthropic API Key。\n\n当前使用**智能演示模式**，模拟真实 AI 回复效果。\n\n> 错误详情：${e.message}`, text, '');
+      await addAIMsg(`**API错误：** ${e.message}`, text, "");
     }
   }
   gen=false;
