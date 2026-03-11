@@ -443,10 +443,10 @@ select{background:var(--s3);color:var(--t1);border:1px solid var(--b2);border-ra
     <div class="sp-stitle">AI 模型</div>
     <div class="sp-card">
       <div class="mch" id="model-chips">
-        <div class="mc sel" onclick="pickModel(this,'claude-sonnet-4-20250514','Nova-Pro')">Nova-Pro</div>
-        <div class="mc" onclick="pickModel(this,'claude-haiku-4-5-20251001','Nova-Fast')">Nova-Fast</div>
-        <div class="mc" onclick="pickModel(this,'claude-opus-4-20250514','Nova-Opus')">Nova-Opus</div>
-        <div class="mc" onclick="pickModel(this,'claude-sonnet-4-20250514','Nova-Code')">Nova-Code</div>
+        <div class="mc sel" onclick="pickModel(this,'anthropic/claude-3-haiku:free','Nova-Pro')">Nova-Pro</div>
+        <div class="mc" onclick="pickModel(this,'anthropic/claude-3.5-sonnet:free','Nova-Sonnet')">Nova-Sonnet</div>
+        <div class="mc" onclick="pickModel(this,'deepseek/deepseek-chat:free','Nova-Deep')">Nova-Deep</div>
+        <div class="mc" onclick="pickModel(this,'meta-llama/llama-3.1-8b-instruct:free','Nova-Fast')">Nova-Fast</div>
       </div>
     </div>
 
@@ -763,7 +763,7 @@ select{background:var(--s3);color:var(--t1);border:1px solid var(--b2);border-ra
 // ============================================
 const $ = id => document.getElementById(id);
 let msgs = [], favs = [], gen = false, stopF = false;
-let mode = '聊天', selectedModel = 'claude-sonnet-4-20250514', modelName = 'Nova-Pro';
+let mode = '聊天', selectedModel = 'anthropic/claude-3-haiku:free', modelName = 'Nova-Pro';
 let tc = {web:false,think:true,code:false,img:false};
 let prefs = {lang:'中文',style:'专业严谨',maxTok:4096,stream:true,mem:true,showThink:false};
 let totalMsgCount = 0;
@@ -853,9 +853,9 @@ function pickModel(el, apiId, name) {
   showToast(`🤖 已切换到 ${name}`);
 }
 const modelCycle = [
-  {api:'claude-sonnet-4-20250514',name:'Nova-Pro'},
-  {api:'claude-haiku-4-5-20251001',name:'Nova-Fast'},
-  {api:'claude-sonnet-4-20250514',name:'Nova-Code'},
+  {api:'anthropic/claude-3-haiku:free',name:'Nova-Pro'},
+  {api:'anthropic/claude-3.5-sonnet:free',name:'Nova-Sonnet'},
+  {api:'deepseek/deepseek-chat:free',name:'Nova-Deep'},
 ];
 let mIdx = 0;
 function pickNextModel() {
@@ -1103,18 +1103,22 @@ async function callClaude(userText) {
   const body = {
     model: selectedModel,
     max_tokens: prefs.maxTok,
-    system: sysPrompt,
-    messages: history
+    messages: [{role:'system',content:sysPrompt}, ...history]
   };
 
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+  const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method:'POST',
-    headers:{'Content-Type':'application/json'},
+    headers:{
+      'Content-Type':'application/json',
+      'Authorization':'Bearer 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',
+      'HTTP-Referer':'https://taohua89471332-ship-it.github.io/nova-ai/',
+      'X-Title':'Nova AI'
+    },
     body: JSON.stringify(body)
   });
   if (!resp.ok) throw new Error(`API ${resp.status}`);
   const data = await resp.json();
-  const content = data.content.map(b=>b.text||'').join('');
+  const content = data.choices[0].message.content;
   return {content, thinking:''};
 }
 
